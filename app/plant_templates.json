@@ -1,0 +1,37 @@
+[
+  {
+    "species": "Cactus",
+    "watering_frequency_days": 14,
+    "light_requirement": "Ridicata"
+  },
+  {
+    "species": "Orhidee",
+    "watering_frequency_days": 7,
+    "light_requirement": "Medie"
+  },
+  {
+    "species": "Ficus",
+    "watering_frequency_days": 5,
+    "light_requirement": "Medie"
+  },
+  {
+    "species": "Aloe Vera",
+    "watering_frequency_days": 10,
+    "light_requirement": "Ridicata"
+  },
+  {
+    "species": "Monstera",
+    "watering_frequency_days": 7,
+    "light_requirement": "Medie"
+  },
+  {
+    "species": "Limba Soacrei (Sansevieria)",
+    "watering_frequency_days": 14,
+    "light_requirement": "Scazuta"
+  },
+  {
+    "species": "Feriga",
+    "watering_frequency_days": 3,
+    "light_requirement": "Scazuta"
+  }
+]
