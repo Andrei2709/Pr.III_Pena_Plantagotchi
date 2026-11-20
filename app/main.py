@@ -2,11 +2,15 @@ import json
 from contextlib import asynccontextmanager
 from datetime import date
 from pathlib import Path
-from fastapi import FastAPI, status
+from fastapi import FastAPI, Request, status
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 from app.database import get_connection, init_db
 from app.schemas import PlantCreate, PlantResponse
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_FILE = Path(__file__).resolve().parent / "plant_templates.json"
 
 
@@ -23,10 +27,31 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Plantagotchi", version="0.1.0", lifespan=lifespan)
 
+app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
-@app.get("/")
-def read_root():
-    return {"message": "Plantagotchi API functioneaza!"}
+
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    with get_connection() as conn:
+        user = conn.execute("SELECT * FROM users WHERE id = 1").fetchone()
+        plants = conn.execute(
+            "SELECT * FROM plants WHERE is_alive = 1 ORDER BY id DESC"
+        ).fetchall()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "user": dict(user),
+            "plants": [dict(row) for row in plants],
+        },
+    )
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "app": "Plantagotchi"}
 
 
 @app.get("/templates")

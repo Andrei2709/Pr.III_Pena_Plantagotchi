@@ -1,0 +1,22 @@
+body {
+    background-color: #f4f9f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-plant {
+    background-color: #2e7d32;
+}
+
+.xp-badge {
+    background-color: #ffc107;
+    color: #212529;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+}
+
+.main-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
