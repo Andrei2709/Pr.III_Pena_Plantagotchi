@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Grădina Mea — Plantagotchi{% endblock %}
+
+{% block content %}
+<div class="card main-card p-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-1 text-success">🌱 Plantele mele active</h1>
+            <p class="text-muted mb-0">Implementare minimală — date încărcate direct din SQLite.</p>
+        </div>
+        <a href="/docs#/default/create_plant_plants_post" target="_blank" class="btn btn-outline-success btn-sm">
+            + Adaugă prin API (Swagger)
+        </a>
+    </div>
+
+    {% if plants %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Nume</th>
+                    <th>Specie</th>
+                    <th>Frecvență udare</th>
+                    <th>Lumină</th>
+                    <th>Ultima udare</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plant in plants %}
+                <tr>
+                    <td>{{ plant.id }}</td>
+                    <td class="fw-semibold">{{ plant.name }}</td>
+                    <td>{{ plant.species }}</td>
+                    <td>La {{ plant.watering_frequency_days }} zile</td>
+                    <td><span class="badge bg-success-subtle text-success">{{ plant.light_requirement }}</span></td>
+                    <td>{{ plant.last_watered }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-light border text-center py-4 mb-0">
+        <p class="mb-2">Nu ai încă nicio plantă în grădină.</p>
+        <a href="/docs" target="_blank" class="btn btn-success btn-sm">Deschide Swagger UI pentru a adăuga prima plantă</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
