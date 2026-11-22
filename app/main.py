@@ -2,8 +2,8 @@ import json
 from contextlib import asynccontextmanager
 from datetime import date
 from pathlib import Path
-from fastapi import FastAPI, Request, status
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Form, Request, status
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -47,6 +47,50 @@ def home(request: Request):
             "plants": [dict(row) for row in plants],
         },
     )
+
+
+@app.get("/add", response_class=HTMLResponse)
+def add_plant_page(request: Request):
+    with get_connection() as conn:
+        user = conn.execute("SELECT * FROM users WHERE id = 1").fetchone()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="add_plant.html",
+        context={
+            "user": dict(user),
+            "plant_templates": load_plant_templates(),
+            "today": date.today().isoformat(),
+        },
+    )
+
+
+@app.post("/add")
+def add_plant_form(
+    name: str = Form(...),
+    species: str = Form(...),
+    watering_frequency_days: int = Form(...),
+    light_requirement: str = Form(...),
+    last_watered: str = Form(...),
+):
+    with get_connection() as conn:
+        conn.execute(
+            """
+            INSERT INTO plants (user_id, name, species, watering_frequency_days, light_requirement, last_watered)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                1,
+                name.strip(),
+                species.strip(),
+                watering_frequency_days,
+                light_requirement,
+                last_watered,
+            ),
+        )
+        conn.commit()
+
+    return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.get("/health")

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Adaugă Plantă — Plantagotchi{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card main-card p-4 bg-white">
+            <h1 class="h4 text-success mb-1">🌱 Adaugă o plantă nouă</h1>
+            <p class="text-muted small mb-4">
+                Alege un șablon predefinit pentru completare automată sau introdu detaliile manual.
+            </p>
+
+            <div class="mb-4 p-3 bg-light rounded border">
+                <label for="templateSelect" class="form-label fw-semibold">
+                    ✨ Șablon rapid (Autofill)
+                </label>
+                <select id="templateSelect" class="form-select">
+                    <option value="">-- Alege o specie predefinită (opțional) --</option>
+                    {% for tpl in plant_templates %}
+                    <option
+                        value="{{ tpl.species }}"
+                        data-species="{{ tpl.species }}"
+                        data-days="{{ tpl.watering_frequency_days }}"
+                        data-light="{{ tpl.light_requirement }}"
+                    >
+                        {{ tpl.species }} (udare la {{ tpl.watering_frequency_days }} zile · lumină {{ tpl.light_requirement }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <form action="/add" method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label fw-semibold">Numele plantei (poreclă)</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="ex: Spike, Luna, Bob" required maxlength="100">
+                </div>
+
+                <div class="mb-3">
+                    <label for="species" class="form-label fw-semibold">Specie</label>
+                    <input type="text" class="form-control" id="species" name="species" placeholder="ex: Cactus, Orhidee" required maxlength="100">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="watering_frequency_days" class="form-label fw-semibold">Frecvență udare (zile)</label>
+                        <input type="number" class="form-control" id="watering_frequency_days" name="watering_frequency_days" min="1" max="365" value="7" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="light_requirement" class="form-label fw-semibold">Necesar lumină</label>
+                        <select class="form-select" id="light_requirement" name="light_requirement" required>
+                            <option value="Scazuta">Scăzută</option>
+                            <option value="Medie" selected>Medie</option>
+                            <option value="Ridicata">Ridicată</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="last_watered" class="form-label fw-semibold">Data ultimei udări</label>
+                    <input type="date" class="form-control" id="last_watered" name="last_watered" value="{{ today }}" required>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/" class="btn btn-outline-secondary">Înapoi la Grădină</a>
+                    <button type="submit" class="btn btn-success px-4">Salvează Planta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("templateSelect").addEventListener("change", function () {
+        const selected = this.options[this.selectedIndex];
+        if (!selected.value) return;
+
+        document.getElementById("species").value = selected.dataset.species;
+        document.getElementById("watering_frequency_days").value = selected.dataset.days;
+        document.getElementById("light_requirement").value = selected.dataset.light;
+    });
+</script>
+{% endblock %}
